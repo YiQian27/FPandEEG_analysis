@@ -1,32 +1,11 @@
-%% define mouse data
-clear all
-close all
-% data structure:
-    % 1) Mouse data address
-    % 2) Mouse sleepscore data address
-    % 3) Mouse FP 405 name
-    % 4) Mouse FP 465 name
-    % 6) recording start time
-    % 9) Mouse EEG name
-    % 10) Mouse EEG channel
-    % 10) Mouse EMG name
-Example_ms = {'/Users/qy/Desktop/Master project/NE oscillation/Data/Young/M10_1_783_2_24hr' '/Users/qy/Desktop/Master project/3. NE oscillation/Data/Young/M10_1_783_2_24hr/M10_24hr.exp' 'x65A' 'x05A' 'x' '01-Jan-2024 6:58:39' 0 'x' 'EEGw' 1 'EMG1' 'x' 'x'};
 
-mouse= Example_ms; % Change to the subject you want to analyze
-t1={(mouse{3})}; % Time when recording is started
-t2={'01-Jan-2024 19:00:00'}; % Change to the day and time you want to start analyzing from
-analysis_hours =24; % analysis period
-%% load data
-data_FPrig = TDTbin2mat(mouse{1});
-%% extract channels
-signal_fs = data_FPrig.streams.(mouse{3}).fs; % sampling frequency for fiber photometry signal
-signal_465= data_FPrig.streams.(mouse{3}).data; %signal
-signal_405= data_FPrig.streams.(mouse{4}).data; %isosbetstic control
-EEG_fs =  data_FPrig.streams.(mouse{9}).fs; %sampling frequency for EEG signal 
-
-EEG_rawtrace = data_FPrig.streams.(mouse{9}).data; %EEG signal
-EEG_rawtrace = EEG_rawtrace(mouse{10},:); %add channel 
-EMG_rawtrace =  data_FPrig.streams.(mouse{11}).data; %EMG 
+signal_405 = signal_data(1,:);
+signal_465 = signal_data(2,:);
+EEG=  EEG_rawtrace;
+EMG=  EMG_rawtrace;
+EEG_fs = frequency(1);
+EMG_fs = frequency(2);
+signal_fs = frequency(3);
 %% time sequences
 
 fs_signal = 1:1:length(signal_465);
@@ -36,11 +15,11 @@ fs_signal_EEG = 1:1:length(EEG_rawtrace);
 sec_signal_EEG = fs_signal_EEG/EEG_fs; % time vector for EEG signal
 
 fs_signal_EMG = 1:1:length(EMG_rawtrace);
-sec_signal_EMG = fs_signal_EMG/EEG_fs; % time vector for EMG signal
+sec_signal_EMG = fs_signal_EMG/EMG_fs; % time vector for EMG signal
 %% preliminary processing
 [ds_sec_signal,ds_detrend_465] = polyfit_baseline_1 (signal_405,signal_465,signal_fs);
 %% Time alignment with the priod you interest
-t1={(mouse{6})}; % Time when recording is started
+t1={'01-Jan-2024 7:04:00'}; % Time when recording is started
 t2={'02-Jan-2024 7:04:00'}; % Time for analyzing start
 analysis_hours =12; % Analysis hour
 
@@ -61,14 +40,13 @@ sec_signal_EEG_cut = fs_signal_EEG_cut/EEG_fs; % time vector for EEG signal
 frq = EEG_fs; 
 
 %% sleepscore data
+% ViewpointData.FileInfo=loadEXP([mouse{2}],'no'); %   
+% TimeReldebSec=0; 
 
-ViewpointData.FileInfo=loadEXP([mouse{2}],'no'); %   
-TimeReldebSec=0; 
+% TimeRelEndSec=ViewpointData.FileInfo.BinFiles.Duration; 
 
-TimeRelEndSec=ViewpointData.FileInfo.BinFiles.Duration; 
-
-[Data,Time]=ExtractContinuousData([],ViewpointData.FileInfo,[],TimeReldebSec, TimeRelEndSec,[],1);
-[FullHypno,TimeScaleAbs,TimeScaleBin,TimeScaleHypno]=ExtractFullHypno(ViewpointData,1);
+% [Data,Time]=ExtractContinuousData([],ViewpointData.FileInfo,[],TimeReldebSec, TimeRelEndSec,[],1);
+% [FullHypno,TimeScaleAbs,TimeScaleBin,TimeScaleHypno]=ExtractFullHypno(ViewpointData,1);
 
 starttime = interval_s+1+time_correction;
 endtime = analysis_hours*3600+interval_s+time_correction;
