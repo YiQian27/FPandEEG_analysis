@@ -9,4 +9,4 @@ To load fiber photometry data we use a custom function provided by Tucker Davis 
 
 The code is organized into folders with "scripts" containing scripts used for analysis and "functions" containing custom functions that are used in the scripts. 
 
-Demo Dataset: The dataset contains representative EEG, NE, and full hypnogram data that can be used to test the analysis pipeline and verify successful installation.
+Demo Dataset: The dataset contains representative EEG, NE, and full hypnogram data that can be used to test the analysis pipeline and verify successful installation. For the testing analysis, you need to load mat file on matlab, add the repository folder and all subfolders to the MATLAB path, run the analysis script according to the instructions provided in the repository.
